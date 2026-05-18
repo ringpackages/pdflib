@@ -594,13 +594,13 @@ func main
         :fontSize = 10
     ])
 
-    curY -= 30
+    curY -= 60
 
     # Show all three images side by side
     pdfDoc.setFont(PDF_HELVETICA_BOLD, 16)
     pdfDoc.setTextColor("navy")
     pdfDoc.drawText("Sample Images", 72, curY)
-    curY -= 15
+    curY -= 60
 
     imgW = 140
     imgH = 105
@@ -613,7 +613,7 @@ func main
 
     pdfDoc.setFont(PDF_HELVETICA_BOLD, 9)
     pdfDoc.setTextColor([41, 98, 255])
-    pdfDoc.drawTextCentered("PNG", 72 + (imgW + 10) / 2, curY)
+    pdfDoc.drawTextCentered("PNG", 72 + (imgW + 10) / 2, curY + 10)
 
     if img1Exists
         pdfDoc.drawImage("images/test1.png", 77, curY - imgH, imgW, imgH)
@@ -627,7 +627,7 @@ func main
 
     pdfDoc.setFont(PDF_HELVETICA_BOLD, 9)
     pdfDoc.setTextColor([234, 67, 53])
-    pdfDoc.drawTextCentered("JPEG", startX2 + (imgW + 10) / 2, curY)
+    pdfDoc.drawTextCentered("JPEG", startX2 + (imgW + 10) / 2, curY + 10)
 
     if img2Exists
         pdfDoc.drawImage("images/test2.jpg", startX2 + 5, curY - imgH, imgW, imgH)
@@ -641,7 +641,7 @@ func main
 
     pdfDoc.setFont(PDF_HELVETICA_BOLD, 9)
     pdfDoc.setTextColor([52, 168, 83])
-    pdfDoc.drawTextCentered("BMP", startX3 + (imgW + 10) / 2, curY)
+    pdfDoc.drawTextCentered("BMP", startX3 + (imgW + 10) / 2, curY + 10)
 
     if img3Exists
         pdfDoc.drawImage("images/test3.bmp", startX3 + 5, curY - imgH, imgW, imgH)
