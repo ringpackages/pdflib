@@ -1,9 +1,28 @@
 # PDFLib — PDF Generation Library for Ring
 
+## Overview
+
+PDFLib is a pure Ring implementation for generating PDF 1.4 files with no external dependencies. Output is compatible with any PDF viewer including Adobe Acrobat, Foxit Reader, and web browsers.
+
+## Features
+
+- **Page management** — multiple pages, sizes (A4, Letter, Legal, etc.), portrait/landscape orientation, margins
+- **Text** — 14 PDF standard fonts (no font files needed; supplied by every PDF viewer), sizes, colors, left/center/right alignment
+- **Paragraphs** — word-wrapping with configurable line height and alignment
+- **Arabic / Unicode text** — any TTF can be loaded and embedded; full shaping and RTL pipeline for Arabic; direct glyph mapping for Latin extensions, Greek, Cyrillic, and CJK; complex scripts (Devanagari, Thai, etc.) are not supported
+- **Shapes** — rectangles, circles, ellipses, lines, polygons; stroke, fill, or both
+- **Tables** — headers, alternating row colors, borders, explicit or auto column widths, Arabic-aware cell rendering
+- **Lists** — bullet lists and numbered lists
+- **Charts** — bar charts and pie charts with legends
+- **Images** — JPEG (DCTDecode), PNG (FlateDecode, all color types), BMP (24-bit); pure Ring parsers, no C library required
+- **Page numbers** — configurable format and position
+- **Headers / Footers** — per-document text with alignment
+- **Watermarks** — rotated text at arbitrary angle
+- **Graphics state** — save/restore, line width, cap, join, dash patterns
+- **Document properties** — title, author, subject, keywords, creator
+
 ## Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Coordinate System](#coordinate-system)
@@ -46,27 +65,6 @@
 - [Technical Notes](#technical-notes)
 
 ---
-
-## Overview
-
-PDFLib is a pure Ring implementation for generating PDF 1.4 files with no external dependencies. Output is compatible with any PDF viewer including Adobe Acrobat, Foxit Reader, and web browsers.
-
-## Features
-
-- **Page management** — multiple pages, sizes (A4, Letter, Legal, etc.), portrait/landscape orientation, margins
-- **Text** — 14 PDF standard fonts (no font files needed; supplied by every PDF viewer), sizes, colors, left/center/right alignment
-- **Paragraphs** — word-wrapping with configurable line height and alignment
-- **Arabic / Unicode text** — any TTF can be loaded and embedded; full shaping and RTL pipeline for Arabic; direct glyph mapping for Latin extensions, Greek, Cyrillic, and CJK; complex scripts (Devanagari, Thai, etc.) are not supported
-- **Shapes** — rectangles, circles, ellipses, lines, polygons; stroke, fill, or both
-- **Tables** — headers, alternating row colors, borders, explicit or auto column widths, Arabic-aware cell rendering
-- **Lists** — bullet lists and numbered lists
-- **Charts** — bar charts and pie charts with legends
-- **Images** — JPEG (DCTDecode), PNG (FlateDecode, all color types), BMP (24-bit); pure Ring parsers, no C library required
-- **Page numbers** — configurable format and position
-- **Headers / Footers** — per-document text with alignment
-- **Watermarks** — rotated text at arbitrary angle
-- **Graphics state** — save/restore, line width, cap, join, dash patterns
-- **Document properties** — title, author, subject, keywords, creator
 
 ## Installation
 
