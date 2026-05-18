@@ -1,41 +1,42 @@
-# PDFLib Documentation
+# PDFLib — PDF Generation Library for Ring
 
 ## Overview
 
-PDFLib is a library for generating PDF files using the Ring programming language. It produces valid PDF 1.4 files that can be opened in any PDF viewer including Adobe Acrobat, Foxit Reader, web browsers, and more.
-
-**Dependencies:** None (pure Ring implementation)
+PDFLib is a pure Ring implementation for generating PDF 1.4 files with no external dependencies. Output is compatible with any PDF viewer including Adobe Acrobat, Foxit Reader, and web browsers.
 
 ## Features
 
-- **Page Management** - Multiple pages, sizes (A4, Letter, Legal, etc.), orientation
-- **Text** - 14 built-in fonts, sizes, colors, bold, italic, alignment
-- **Paragraphs** - Word wrapping, left/center/right alignment
-- **Shapes** - Rectangles, circles, ellipses, lines, polygons
-- **Tables** - Headers, colored rows, borders, auto-width
-- **Lists** - Bullet lists, numbered lists
-- **Charts** - Bar charts, pie charts with legends
-- **Page Numbers** - Customizable format and position
-- **Headers/Footers** - Text with alignment on every page
-- **Watermarks** - Rotated text watermarks
-- **Images** - JPEG image embedding
-- **Document Properties** - Title, author, subject, keywords
+- **Page management** — multiple pages, sizes (A4, Letter, Legal, etc.), portrait/landscape orientation, margins
+- **Text** — 14 built-in standard fonts, sizes, colors, left/center/right alignment
+- **Paragraphs** — word-wrapping with configurable line height and alignment
+- **Arabic / Unicode text** — TrueType font loading, contextual letter shaping (isolated/initial/medial/final forms), right-to-left layout, RTL paragraph word-wrap, mixed Arabic/Latin documents
+- **Shapes** — rectangles, circles, ellipses, lines, polygons; stroke, fill, or both
+- **Tables** — headers, alternating row colors, borders, explicit or auto column widths, Arabic-aware cell rendering
+- **Lists** — bullet lists and numbered lists
+- **Charts** — bar charts and pie charts with legends
+- **Images** — JPEG (DCTDecode), PNG (FlateDecode, all color types), BMP (24-bit); pure Ring parsers, no C library required
+- **Page numbers** — configurable format and position
+- **Headers / Footers** — per-document text with alignment
+- **Watermarks** — rotated text at arbitrary angle
+- **Graphics state** — save/restore, line width, cap, join, dash patterns
+- **Document properties** — title, author, subject, keywords, creator
 
 ## Installation
 
-	ringpm install pdflib from ringpackages
-
+```ring
+ringpm install pdflib from ringpackages
+```
 
 ## Quick Start
 
 ```ring
 load "pdflib.ring"
 
-pdfDoc = new PDFWriter()
-pdfDoc.setTitle("My First PDF")
-pdfDoc.setFont(PDF_HELVETICA_BOLD, 24)
-pdfDoc.drawText("Hello, World!", 72, 700)
-pdfDoc.save("hello.pdf")
+pdf = new PDFWriter()
+pdf.setTitle("My First PDF")
+pdf.setFont(PDF_HELVETICA_BOLD, 24)
+pdf.drawText("Hello, World!", 72, 700)
+pdf.save("hello.pdf")
 ```
 
 ### Quick Function
@@ -51,15 +52,28 @@ quickPDF("output.pdf", "My Document", [
 
 ---
 
+## Coordinate System
+
+PDF uses a bottom-left origin:
+
+- (0, 0) is the **bottom-left** corner of the page
+- X increases to the **right**
+- Y increases **upward**
+- 1 point = 1/72 inch
+
+For A4 paper (595 × 842 pt), the top of the page is y ≈ 842. For typical document layout, start drawing at y = 750 and decrease y for each new line.
+
+---
+
 ## API Reference
 
 ### Constructor
 
 ```ring
-pdfDoc = new PDFWriter()
+pdf = new PDFWriter()
 ```
 
-Creates a new PDF document with one blank A4 page.
+Creates a new PDF document with one blank A4 page. All 14 standard fonts are pre-registered.
 
 ---
 
@@ -67,58 +81,58 @@ Creates a new PDF document with one blank A4 page.
 
 | Method | Description |
 |--------|-------------|
-| `setPageSize(size)` | Set page size (PDF_A4, PDF_LETTER, etc.) |
-| `setOrientation(orient)` | PDF_PORTRAIT or PDF_LANDSCAPE |
-| `setMargins(l, t, r, b)` | Set margins in points (72pt = 1 inch) |
-| `setTitle(text)` | Set document title |
-| `setAuthor(text)` | Set author name |
-| `setSubject(text)` | Set subject |
-| `setKeywords(text)` | Set keywords |
-| `setCreator(text)` | Set creator application name |
+| `setPageSize(size)` | Page size constant — see Page Sizes table |
+| `setOrientation(orient)` | `PDF_PORTRAIT` or `PDF_LANDSCAPE` |
+| `setMargins(left, top, right, bottom)` | Margins in points (72 pt = 1 inch). Default: 72 all sides |
+| `setTitle(text)` | Document title |
+| `setAuthor(text)` | Author name |
+| `setSubject(text)` | Subject |
+| `setKeywords(text)` | Keywords |
+| `setCreator(text)` | Creator application name |
 
 ### Page Sizes
 
-| Constant | Size (points) | Physical |
-|----------|--------------|----------|
-| `PDF_A4` | 595.28 x 841.89 | 210 x 297 mm |
-| `PDF_A3` | 841.89 x 1190.55 | 297 x 420 mm |
-| `PDF_A5` | 419.53 x 595.28 | 148 x 210 mm |
-| `PDF_LETTER` | 612 x 792 | 8.5 x 11 in |
-| `PDF_LEGAL` | 612 x 1008 | 8.5 x 14 in |
-| `PDF_TABLOID` | 792 x 1224 | 11 x 17 in |
+| Constant | Points | Physical |
+|----------|--------|----------|
+| `PDF_A4` | 595.28 × 841.89 | 210 × 297 mm |
+| `PDF_A3` | 841.89 × 1190.55 | 297 × 420 mm |
+| `PDF_A5` | 419.53 × 595.28 | 148 × 210 mm |
+| `PDF_LETTER` | 612 × 792 | 8.5 × 11 in |
+| `PDF_LEGAL` | 612 × 1008 | 8.5 × 14 in |
+| `PDF_TABLOID` | 792 × 1224 | 11 × 17 in |
 
 ---
 
 ### Page Management
 
-| Method | Description |
-|--------|-------------|
-| `addPage()` | Add a new page |
-| `selectPage(n)` | Select page by number |
-| `getPageCount()` | Get total number of pages |
-| `getPageWidth()` | Get current page width |
-| `getPageHeight()` | Get current page height |
-| `getContentWidth()` | Page width minus margins |
-| `getContentHeight()` | Page height minus margins |
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `addPage()` | self | Add a new page and switch to it |
+| `selectPage(n)` | self | Switch to page n (1-based) |
+| `getPageCount()` | number | Total number of pages |
+| `getPageWidth()` | number | Current page width in points |
+| `getPageHeight()` | number | Current page height in points |
+| `getContentWidth()` | number | Page width minus left and right margins |
+| `getContentHeight()` | number | Page height minus top and bottom margins |
 
 ---
 
-### Font Settings
+### Standard Fonts
+
+Set the active font with `setFont(fontName, size)` or change only the size with `setFontSize(size)`.
 
 ```ring
-pdfDoc.setFont(fontName, fontSize)
-pdfDoc.setFontSize(size)
+pdf.setFont(PDF_HELVETICA_BOLD, 18)
+pdf.setFontSize(12)
 ```
-
-### Available Fonts
 
 | Constant | Font |
 |----------|------|
-| `PDF_HELVETICA` | Helvetica (Arial-like) |
+| `PDF_HELVETICA` | Helvetica |
 | `PDF_HELVETICA_BOLD` | Helvetica Bold |
 | `PDF_HELVETICA_ITALIC` | Helvetica Italic |
 | `PDF_HELVETICA_BOLDITALIC` | Helvetica Bold Italic |
-| `PDF_TIMES` | Times Roman (serif) |
+| `PDF_TIMES` | Times Roman |
 | `PDF_TIMES_BOLD` | Times Bold |
 | `PDF_TIMES_ITALIC` | Times Italic |
 | `PDF_TIMES_BOLDITALIC` | Times Bold Italic |
@@ -131,121 +145,226 @@ pdfDoc.setFontSize(size)
 
 ---
 
-### Color Settings
+### Arabic / Unicode Text
+
+PDFLib includes a pure Ring Arabic text engine supporting UTF-8 decoding, contextual letter shaping, and right-to-left layout. A TrueType font (`.ttf`) must be loaded before drawing Arabic text.
+
+#### Loading a TrueType Font
 
 ```ring
-pdfDoc.setTextColor(color)
-pdfDoc.setFillColor(color)
-pdfDoc.setStrokeColor(color)
+# loadArabicFont is an alias for loadTTFFont
+pdf.loadArabicFont("font/arial.ttf", "Arabic")
+
+# The second argument becomes the font alias used with setFont
+pdf.setFont("Arabic", 24)
 ```
 
-**Color formats:**
-- Named: `"red"`, `"blue"`, `"steelblue"`, etc.
-- Hex: `"#FF5733"` or `"FF5733"`
+Both `loadArabicFont` and `loadTTFFont` accept the same parameters and are interchangeable.
+
+#### Drawing Arabic Text
+
+| Method | Description |
+|--------|-------------|
+| `drawArabicText(text, x, y)` | Draw Arabic text; **x is the right edge** of the text (RTL) |
+| `drawArabicTextLeft(text, x, y)` | Draw Arabic text with **x as the left edge** |
+| `drawArabicTextCentered(text, x, y)` | Draw Arabic text centered at x |
+| `drawArabicTextInCell(text, x, y)` | Draw Arabic text in a LTR cell context (left-edge x) |
+| `drawArabicParagraph(text, x, y, maxWidth, lineHeight)` | RTL word-wrapped paragraph; x is right edge; returns final Y |
+| `getArabicTextWidth(text)` | Returns rendered width in points for the current font and size |
+
+```ring
+pdf.loadArabicFont("font/arial.ttf", "Arabic")
+pdf.setFont("Arabic", 28)
+pdf.setTextColor("black")
+
+# x = 523 is the right edge of the text
+pdf.drawArabicText("مرحبا بالعالم", 523, 700)
+
+# RTL paragraph with word wrap, max width 441 pt
+pdf.drawArabicParagraph("لغة البرمجة رينج هي لغة حديثة وسهلة التعلم", 523, 600, 441, 28)
+```
+
+#### Mixed Arabic/Latin Documents
+
+When an `arabicFont` option is passed to `drawTable`, cells are automatically rendered with the correct font and direction based on their content. Arabic segments within a mixed cell are drawn right-to-left; Latin segments are drawn left-to-right.
+
+```ring
+pdf.drawTable(data, 72, 700, [200, 268], [
+    :headerBg = "navy",
+    :headerFg = "white",
+    :arabicFont = "Arabic"
+])
+```
+
+---
+
+### Colors
+
+```ring
+pdf.setTextColor(color)
+pdf.setFillColor(color)
+pdf.setStrokeColor(color)
+```
+
+Colors can be specified in three formats:
+
+- Named string: `"red"`, `"navy"`, `"steelblue"`, etc.
+- Hex string: `"#FF5733"` or `"FF5733"`
 - RGB array: `[255, 87, 51]`
 
-**Named Colors:**
-black, white, red, green, blue, yellow, orange, purple, pink, gray, navy, teal, maroon, silver, lime, aqua, cyan, fuchsia, olive, brown, coral, crimson, gold, indigo, salmon, steelblue, tomato, darkblue, darkgreen, darkred, lightgray, darkgray
+**Named colors:** black, white, red, green, blue, yellow, orange, purple, pink, gray, grey, navy, teal, maroon, silver, lime, aqua, cyan, fuchsia, olive, brown, coral, crimson, gold, indigo, salmon, steelblue, tomato, darkblue, darkgreen, darkred, lightgray, lightgrey, darkgray, darkgrey
 
 ---
 
 ### Text Drawing
 
 ```ring
-pdfDoc.drawText(text, x, y)
-pdfDoc.drawTextCentered(text, x, y)
-pdfDoc.drawTextRight(text, x, y)
-pdfDoc.drawTextAligned(text, x, y, width, alignment)
+pdf.drawText(text, x, y)                          # Left-aligned at (x, y)
+pdf.drawTextCentered(text, x, y)                  # Horizontally centered at x
+pdf.drawTextRight(text, x, y)                     # Right edge at x
+pdf.drawTextAligned(text, x, y, width, align)     # Within a box of given width
 ```
 
-**Coordinate System:** PDF origin is bottom-left. Y increases upward.
+**Alignment constants:**
 
-**Alignment Constants:**
-- `PDF_ALIGN_LEFT` (0)
-- `PDF_ALIGN_CENTER` (1)
-- `PDF_ALIGN_RIGHT` (2)
+| Constant | Value |
+|----------|-------|
+| `PDF_ALIGN_LEFT` | 0 |
+| `PDF_ALIGN_CENTER` | 1 |
+| `PDF_ALIGN_RIGHT` | 2 |
 
 ---
 
 ### Paragraphs
 
+Both functions return the Y position after the last line, which can be used to continue drawing below the paragraph.
+
 ```ring
-# Returns Y position after last line
-newY = pdfDoc.drawParagraph(text, x, y, maxWidth, lineHeight)
-newY = pdfDoc.drawParagraphAligned(text, x, y, maxWidth, lineHeight, align)
+newY = pdf.drawParagraph(text, x, y, maxWidth, lineHeight)
+newY = pdf.drawParagraphAligned(text, x, y, maxWidth, lineHeight, align)
 ```
+
+`lineHeight` defaults to `fontSize × 1.2` when `NULL` is passed.
 
 ---
 
 ### Shapes
 
-```ring
-# Rectangles
-pdfDoc.drawRect(x, y, width, height)             # Stroke only
-pdfDoc.drawFilledRect(x, y, width, height)        # Fill + stroke
-pdfDoc.drawFilledRectNoStroke(x, y, width, height) # Fill only
-
-# Circles
-pdfDoc.drawCircle(cx, cy, radius)                 # Stroke only
-pdfDoc.drawFilledCircle(cx, cy, radius)           # Fill + stroke
-
-# Ellipses
-pdfDoc.drawEllipse(cx, cy, rx, ry)
-pdfDoc.drawFilledEllipse(cx, cy, rx, ry)
-
-# Lines
-pdfDoc.drawLine(x1, y1, x2, y2)
-pdfDoc.drawHorizontalRule(x, y, width)
-
-# Polygons
-pdfDoc.drawPolygon([[x1,y1], [x2,y2], [x3,y3], ...])
-```
-
-### Line Settings
+#### Rectangles
 
 ```ring
-pdfDoc.setLineWidth(width)
-pdfDoc.setLineCap(PDF_CAP_BUTT)     # 0=butt, 1=round, 2=square
-pdfDoc.setLineJoin(PDF_JOIN_MITER)  # 0=miter, 1=round, 2=bevel
-pdfDoc.setDash([5, 3], 0)           # Dash pattern
-pdfDoc.resetDash()                  # Solid line
+pdf.drawRect(x, y, width, height)                # Stroke only
+pdf.drawFilledRect(x, y, width, height)           # Fill and stroke
+pdf.drawFilledRectNoStroke(x, y, width, height)   # Fill only
 ```
+
+#### Circles and Ellipses
+
+```ring
+pdf.drawCircle(cx, cy, radius)
+pdf.drawFilledCircle(cx, cy, radius)
+
+pdf.drawEllipse(cx, cy, rx, ry)
+pdf.drawFilledEllipse(cx, cy, rx, ry)
+```
+
+#### Lines
+
+```ring
+pdf.drawLine(x1, y1, x2, y2)
+pdf.drawHorizontalRule(x, y, width)    # Horizontal line
+```
+
+#### Polygons
+
+```ring
+# Points is a list of [x, y] pairs; polygon is always filled and stroked
+pdf.drawPolygon([[x1, y1], [x2, y2], [x3, y3], ...])
+```
+
+### Line Style
+
+```ring
+pdf.setLineWidth(width)
+pdf.setLineCap(cap)     # 0 = butt (PDF_CAP_BUTT), 1 = round, 2 = square
+pdf.setLineJoin(join)   # 0 = miter (PDF_JOIN_MITER), 1 = round, 2 = bevel
+pdf.setDash([5, 3], 0)  # Dash array and phase
+pdf.resetDash()         # Restore solid line
+```
+
+---
+
+### Images
+
+`drawImage` detects the file format automatically by its header bytes and embeds accordingly. No external image library is required.
+
+```ring
+pdf.drawImage(filename, x, y, width, height)
+```
+
+| Format | Encoding | Notes |
+|--------|----------|-------|
+| JPEG (`.jpg`, `.jpeg`) | DCTDecode | All standard JPEG files; dimensions parsed from SOF marker |
+| PNG (`.png`) | FlateDecode | Grayscale, RGB, grayscale+alpha, RGBA; predictor 15 |
+| BMP (`.bmp`) | Raw RGB | 24-bit BMP only; rows converted from BGR bottom-up to RGB top-down |
+
+```ring
+# JPEG
+pdf.drawImage("photo.jpg", 72, 500, 200, 150)
+
+# PNG (all color types supported)
+pdf.drawImage("logo.png", 72, 400, 100, 100)
+
+# BMP (24-bit)
+pdf.drawImage("scan.bmp", 72, 300, 150, 100)
+```
+
+Width and height are the display dimensions in points (72 pt = 1 inch). The image is scaled to fit the specified rectangle regardless of its pixel dimensions.
 
 ---
 
 ### Tables
 
-```ring
-# With explicit column widths
-newY = pdfDoc.drawTable(data, x, y, colWidths, options)
+#### Explicit Column Widths
 
-# Auto-calculated column widths
-newY = pdfDoc.drawSimpleTable(data, x, y, totalWidth, options)
+```ring
+# data is a 2D list; first row is the header
+newY = pdf.drawTable(data, x, y, colWidths, options)
 ```
 
-**Data format:** 2D list where first row is headers.
+#### Auto Column Widths
 
-**Options:**
-- `:rowHeight` - Row height in points (default: 20)
-- `:headerBg` - Header background color
-- `:headerFg` - Header text color
-- `:evenRowBg` - Even row background color
-- `:borderColor` - Border color
-- `:fontSize` - Text size
-- `:showHeader` - Show/hide header (default: true)
-- `:padding` - Cell padding
+```ring
+# Divides totalWidth evenly across all columns
+newY = pdf.drawSimpleTable(data, x, y, totalWidth, options)
+```
+
+Both return the Y position after the last row.
+
+**Table options:**
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `:rowHeight` | 20 | Row height in points |
+| `:headerBg` | `[66, 133, 244]` | Header background color |
+| `:headerFg` | `[255, 255, 255]` | Header text color |
+| `:evenRowBg` | `[240, 240, 240]` | Even row background color |
+| `:borderColor` | `[0, 0, 0]` | Cell border color |
+| `:fontSize` | 10 | Text size in points |
+| `:showHeader` | `true` | Show or hide the header row |
+| `:padding` | 5 | Cell padding in points |
+| `:arabicFont` | `""` | Font alias for Arabic cell content (enables mixed-script cells) |
 
 ---
 
 ### Lists
 
 ```ring
-# Bullet list
-newY = pdfDoc.drawBulletList(items, x, y, lineHeight)
-
-# Numbered list
-newY = pdfDoc.drawNumberedList(items, x, y, lineHeight)
+newY = pdf.drawBulletList(items, x, y, lineHeight)
+newY = pdf.drawNumberedList(items, x, y, lineHeight)
 ```
+
+`items` is a list of strings. `lineHeight` defaults to `fontSize × 1.4` when `NULL`. Both return the Y position after the last item.
 
 ---
 
@@ -254,76 +373,72 @@ newY = pdfDoc.drawNumberedList(items, x, y, lineHeight)
 #### Bar Chart
 
 ```ring
-data = [:labels = ["A", "B", "C"], :values = [10, 20, 30]]
-pdfDoc.drawBarChart(data, x, y, width, height, options)
+data = [:labels = ["Q1", "Q2", "Q3"], :values = [120, 200, 170]]
+pdf.drawBarChart(data, x, y, width, height, options)
 ```
 
-**Options:**
-- `:title` - Chart title
-- `:colors` - Array of RGB arrays
-- `:showValues` - Show values above bars
+| Option | Description |
+|--------|-------------|
+| `:title` | Chart title drawn above the chart |
+| `:colors` | List of RGB arrays for bars |
+| `:showValues` | `true` to draw each bar's value above it |
 
 #### Pie Chart
 
 ```ring
-data = [:labels = ["A", "B", "C"], :values = [40, 35, 25]]
-pdfDoc.drawPieChart(data, cx, cy, radius, options)
+data = [:labels = ["Alpha", "Beta", "Gamma"], :values = [40, 35, 25]]
+pdf.drawPieChart(data, cx, cy, radius, options)
 ```
 
-**Options:**
-- `:colors` - Array of RGB arrays
-- `:showLegend` - Show legend
+| Option | Description |
+|--------|-------------|
+| `:colors` | List of RGB arrays for slices |
+| `:showLegend` | `true` to draw a legend to the right of the chart |
 
 ---
 
 ### Page Numbers
 
 ```ring
-pdfDoc.enablePageNumbers()
-pdfDoc.setPageNumberFormat("Page {n} of {total}")
-pdfDoc.setPageNumberPosition(x, y)
+pdf.enablePageNumbers()
+pdf.setPageNumberFormat("Page {n} of {total}")   # {n} and {total} are placeholders
+pdf.setPageNumberPosition(x, y)                  # Default: horizontally centered, y = 30
 ```
 
-Placeholders: `{n}` = current page, `{total}` = total pages.
+Page numbers are added to all pages automatically at save time.
 
 ---
 
 ### Headers and Footers
 
 ```ring
-pdfDoc.setHeader("Header Text", PDF_ALIGN_CENTER)
-pdfDoc.setFooter("Footer Text", PDF_ALIGN_LEFT)
+pdf.setHeader("My Document", PDF_ALIGN_CENTER)
+pdf.setFooter("Confidential", PDF_ALIGN_RIGHT)
 ```
+
+Headers and footers are drawn on every page at save time using 10 pt Helvetica in gray. The `align` parameter is a `PDF_ALIGN_*` constant and defaults to `PDF_ALIGN_LEFT`.
 
 ---
 
 ### Watermarks
 
 ```ring
-pdfDoc.drawWatermark("DRAFT", [
+pdf.drawWatermark("DRAFT", [
     :fontSize = 60,
     :color = [200, 200, 200],
     :angle = 45
 ])
 ```
 
----
-
-### Images
-
-```ring
-pdfDoc.drawImage("photo.jpg", x, y, width, height)
-```
-
-Supports JPEG images.
+All three options are optional. Defaults are fontSize 60, light gray, angle 45°. The watermark is centered on the current page.
 
 ---
 
 ### Graphics State
 
 ```ring
-pdfDoc.saveState()    # Save current graphics state
-pdfDoc.restoreState() # Restore saved state
+pdf.saveState()     # Push current graphics state (color, line width, etc.)
+pdf.restoreState()  # Pop and restore previously saved state
 ```
 
 ---
@@ -331,7 +446,7 @@ pdfDoc.restoreState() # Restore saved state
 ### Output
 
 ```ring
-pdfDoc.save("output.pdf")  # Returns true/false
+ok = pdf.save("output.pdf")   # Returns true on success, false on failure
 ```
 
 ---
@@ -343,20 +458,18 @@ pdfDoc.save("output.pdf")  # Returns true/false
 ```ring
 load "pdflib.ring"
 
-pdfDoc = new PDFWriter()
-pdfDoc.setTitle("Invoice #1001")
+pdf = new PDFWriter()
+pdf.setTitle("Invoice #1001")
 
-# Header
-pdfDoc.setFont(PDF_HELVETICA_BOLD, 28)
-pdfDoc.setTextColor("navy")
-pdfDoc.drawText("INVOICE", 72, 760)
+pdf.setFont(PDF_HELVETICA_BOLD, 28)
+pdf.setTextColor("navy")
+pdf.drawText("INVOICE", 72, 760)
 
-pdfDoc.setFont(PDF_HELVETICA, 12)
-pdfDoc.setTextColor("gray")
-pdfDoc.drawTextRight("#INV-1001", 540, 760)
-pdfDoc.drawTextRight("Date: 2025-01-15", 540, 740)
+pdf.setFont(PDF_HELVETICA, 12)
+pdf.setTextColor("gray")
+pdf.drawTextRight("#INV-1001", 540, 760)
+pdf.drawTextRight("Date: 2025-01-15", 540, 740)
 
-# Line items table
 items = [
     ["Description", "Qty", "Price", "Total"],
     ["Web Design", "1", "$2,500", "$2,500"],
@@ -364,17 +477,16 @@ items = [
     ["Domain Name", "2", "$15", "$30"]
 ]
 
-pdfDoc.drawTable(items, 72, 650, [250, 60, 80, 78], [
+pdf.drawTable(items, 72, 650, [250, 60, 80, 78], [
     :headerBg = "navy",
     :headerFg = "white"
 ])
 
-# Total
-pdfDoc.setFont(PDF_HELVETICA_BOLD, 14)
-pdfDoc.setTextColor("black")
-pdfDoc.drawTextRight("Total: $2,830.00", 540, 540)
+pdf.setFont(PDF_HELVETICA_BOLD, 14)
+pdf.setTextColor("black")
+pdf.drawTextRight("Total: $2,830.00", 540, 540)
 
-pdfDoc.save("invoice.pdf")
+pdf.save("invoice.pdf")
 ```
 
 ### Certificate
@@ -382,47 +494,83 @@ pdfDoc.save("invoice.pdf")
 ```ring
 load "pdflib.ring"
 
-pdfDoc = new PDFWriter()
-pdfDoc.setOrientation(PDF_LANDSCAPE)
+pdf = new PDFWriter()
+pdf.setOrientation(PDF_LANDSCAPE)
 
-# Border
-pdfDoc.setStrokeColor("gold")
-pdfDoc.setLineWidth(4)
-pdfDoc.drawRect(30, 30, 781, 531)
+pdf.setStrokeColor("gold")
+pdf.setLineWidth(4)
+pdf.drawRect(30, 30, 781, 531)
 
-# Title
-pdfDoc.setFont(PDF_TIMES_BOLD, 36)
-pdfDoc.setTextColor("navy")
-pdfDoc.drawTextCentered("Certificate of Achievement", 420, 460)
+pdf.setFont(PDF_TIMES_BOLD, 36)
+pdf.setTextColor("navy")
+pdf.drawTextCentered("Certificate of Achievement", 420, 460)
 
-# Recipient
-pdfDoc.setFont(PDF_TIMES_ITALIC, 24)
-pdfDoc.setTextColor("black")
-pdfDoc.drawTextCentered("John Smith", 420, 350)
+pdf.setFont(PDF_TIMES_ITALIC, 24)
+pdf.setTextColor("black")
+pdf.drawTextCentered("Jane Smith", 420, 350)
 
-# Description
-pdfDoc.setFont(PDF_TIMES, 14)
-pdfDoc.drawTextCentered("For outstanding contributions to the team", 420, 300)
+pdf.setFont(PDF_TIMES, 14)
+pdf.drawTextCentered("For outstanding contributions to the team", 420, 300)
 
-pdfDoc.save("certificate.pdf")
+pdf.save("certificate.pdf")
 ```
 
----
+### Arabic Document
 
-## Coordinate System
+```ring
+load "pdflib.ring"
 
-PDF uses a coordinate system where:
-- Origin (0, 0) is at the **bottom-left** corner
-- X increases to the **right**
-- Y increases **upward**
-- 1 point = 1/72 inch
+pdf = new PDFWriter()
+pdf.setTitle("Arabic Demo")
 
-For A4 paper: top of page is y=841, bottom is y=0.
+# Load a TrueType font for Arabic rendering
+pdf.loadArabicFont("font/arial.ttf", "Arabic")
 
-**Tip:** For typical document layout, start at y=750 and work downward (decreasing y values).
+# English heading
+pdf.setFont(PDF_HELVETICA_BOLD, 16)
+pdf.setTextColor("black")
+pdf.drawText("Bilingual Document", 72, 760)
+
+# Arabic heading — x is the right edge
+pdf.setFont("Arabic", 20)
+pdf.drawArabicText("وثيقة ثنائية اللغة", 523, 760)
+
+# Arabic paragraph with RTL word wrap
+pdf.setFont("Arabic", 14)
+pdf.drawArabicParagraph(
+    "لغة البرمجة رينج هي لغة حديثة وسهلة التعلم تدعم البرمجة الكائنية",
+    523, 720, 440, 22
+)
+
+pdf.save("arabic_demo.pdf")
+```
+
+### Images
+
+```ring
+load "pdflib.ring"
+
+pdf = new PDFWriter()
+pdf.setTitle("Image Gallery")
+
+# JPEG
+pdf.drawImage("photo.jpg", 72, 560, 200, 150)
+
+# PNG (transparent backgrounds and all color types supported)
+pdf.drawImage("logo.png", 300, 560, 120, 120)
+
+# BMP (24-bit)
+pdf.drawImage("scan.bmp", 72, 380, 180, 140)
+
+pdf.save("gallery.pdf")
+```
 
 ---
 
 ## Technical Notes
 
-- **Format:** PDF 1.4 (ISO 32000-1)
+- **Format:** PDF 1.4 (ISO 32000-1), compatible with all modern viewers
+- **Arabic pipeline:** UTF-8 decode → contextual shaping → bidi reorder → TrueType glyph mapping → CIDFont / Type0 embedding with ToUnicode CMap
+- **PNG support:** all PNG color types (grayscale, RGB, grayscale+alpha, RGBA) via FlateDecode with Predictor 15; alpha channels are handled through a DeviceN tint function
+- **BMP support:** 24-bit BMP only; rows are converted from BGR bottom-up storage to RGB top-down on read
+- **No external dependencies:** all format parsing (JPEG, PNG, BMP, TTF) is implemented in pure Ring
