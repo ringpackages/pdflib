@@ -5,11 +5,11 @@ aPackageInfo = [
 	:developer = "Mahmoud Fayed",
 	:email = "msfclipper@yahoo.com",
 	:license = "MIT License",
-	:version = "1.0.1",
+	:version = "1.0.2",
 	:ringversion = "1.26",
 	:versions = 	[
 		[
-			:version = "1.0.1",
+			:version = "1.0.2",
 			:branch = "master"
 		]
 	],
@@ -35,6 +35,11 @@ aPackageInfo = [
 		"samples/UsingPDFLib/demo_arabic.ring",
 		"samples/UsingPDFLib/demo_general.ring",
 		"samples/UsingPDFLib/demo_images.ring",
+		"samples/UsingPDFLib/hello.ring",
+		"samples/UsingPDFLib/quick.ring",
+		"samples/UsingPDFLib/invoice.ring",
+		"samples/UsingPDFLib/certificate.ring",
+		"samples/UsingPDFLib/gallery.ring",
 		"samples/UsingPDFLib/font/arial.ttf",
 		"samples/UsingPDFLib/images/test1.png",
 		"samples/UsingPDFLib/images/test2.jpg",
