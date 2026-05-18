@@ -6,6 +6,10 @@
 
 load "pdflib.ring"
 
+C_IMAGE_TEST1 = "images/test1.png"
+C_IMAGE_TEST2 = "images/test2.jpg"
+C_IMAGE_TEST3 = "images/test3.bmp"
+
 func main
 
     ? "=============================================="
@@ -14,9 +18,9 @@ func main
     ? ""
 
     # Check which test images exist
-    img1Exists = fexists("images/test1.png")
-    img2Exists = fexists("images/test2.jpg")
-    img3Exists = fexists("images/test3.bmp")
+    img1Exists = fexists(C_IMAGE_TEST1)
+    img2Exists = fexists(C_IMAGE_TEST2)
+    img3Exists = fexists(C_IMAGE_TEST3)
 
     ? "Image files found:"
     if img1Exists ? "  [OK]  images/test1.png" else ? "  [--]  images/test1.png not found" ok
@@ -64,7 +68,7 @@ func main
         pdfDoc.drawFilledRect(67, 387, 460, 340)
         
         # Draw the image
-        pdfDoc.drawImage("images/test1.png", 72, 392, 450, 330)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 72, 392, 450, 330)
         
         # Caption
         pdfDoc.setFont(PDF_HELVETICA_ITALIC, 11)
@@ -129,7 +133,7 @@ func main
         pdfDoc.drawFilledRect(67, 387, 460, 340)
         
         # Draw the image
-        pdfDoc.drawImage("images/test2.jpg", 72, 392, 450, 330)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 72, 392, 450, 330)
         
         # Caption
         pdfDoc.setFont(PDF_HELVETICA_ITALIC, 11)
@@ -194,7 +198,7 @@ func main
         pdfDoc.drawFilledRect(67, 387, 460, 340)
         
         # Draw the image
-        pdfDoc.drawImage("images/test3.bmp", 72, 392, 450, 330)
+        pdfDoc.drawImage(C_IMAGE_TEST3, 72, 392, 450, 330)
         
         # Caption
         pdfDoc.setFont(PDF_HELVETICA_ITALIC, 11)
@@ -262,20 +266,20 @@ func main
         # Left image frame
         pdfDoc.setFillColor([248, 248, 248])
         pdfDoc.drawFilledRect(72, 575, 220, 165)
-        pdfDoc.drawImage("images/test1.png", 75, 578, 214, 159)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 75, 578, 214, 159)
     ok
 
     if img2Exists
         # Right image frame
         pdfDoc.setFillColor([248, 248, 248])
         pdfDoc.drawFilledRect(310, 575, 220, 165)
-        pdfDoc.drawImage("images/test2.jpg", 313, 578, 214, 159)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 313, 578, 214, 159)
     ok
 
     pdfDoc.setFont(PDF_HELVETICA, 9)
     pdfDoc.setTextColor("gray")
-    if img1Exists pdfDoc.drawTextCentered("images/test1.png", 182, 562) ok
-    if img2Exists pdfDoc.drawTextCentered("images/test2.jpg", 420, 562) ok
+    if img1Exists pdfDoc.drawTextCentered(C_IMAGE_TEST1, 182, 562) ok
+    if img2Exists pdfDoc.drawTextCentered(C_IMAGE_TEST2, 420, 562) ok
 
     # Row 2 - BMP image centered
     pdfDoc.setFont(PDF_HELVETICA_BOLD, 14)
@@ -286,11 +290,11 @@ func main
         pdfDoc.setFillColor([248, 248, 248])
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.drawFilledRect(148, 345, 300, 175)
-        pdfDoc.drawImage("images/test3.bmp", 151, 348, 294, 169)
+        pdfDoc.drawImage(C_IMAGE_TEST3, 151, 348, 294, 169)
         
         pdfDoc.setFont(PDF_HELVETICA, 9)
         pdfDoc.setTextColor("gray")
-        pdfDoc.drawTextCentered("images/test3.bmp", 297, 332)
+        pdfDoc.drawTextCentered(C_IMAGE_TEST3, 297, 332)
     ok
 
     # Row 3 - Three thumbnails
@@ -307,7 +311,7 @@ func main
         pdfDoc.setFillColor([248, 248, 248])
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.drawFilledRect(72, thumbY, thumbW, thumbH)
-        pdfDoc.drawImage("images/test1.png", 75, thumbY + 3, thumbW - 6, thumbH - 6)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 75, thumbY + 3, thumbW - 6, thumbH - 6)
         pdfDoc.setFont(PDF_HELVETICA, 8)
         pdfDoc.setTextColor("gray")
         pdfDoc.drawTextCentered("PNG", 72 + thumbW / 2, thumbY - 12)
@@ -318,7 +322,7 @@ func main
         pdfDoc.setFillColor([248, 248, 248])
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.drawFilledRect(thX, thumbY, thumbW, thumbH)
-        pdfDoc.drawImage("images/test2.jpg", thX + 3, thumbY + 3, thumbW - 6, thumbH - 6)
+        pdfDoc.drawImage(C_IMAGE_TEST2, thX + 3, thumbY + 3, thumbW - 6, thumbH - 6)
         pdfDoc.setFont(PDF_HELVETICA, 8)
         pdfDoc.setTextColor("gray")
         pdfDoc.drawTextCentered("JPEG", thX + thumbW / 2, thumbY - 12)
@@ -329,7 +333,7 @@ func main
         pdfDoc.setFillColor([248, 248, 248])
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.drawFilledRect(thX, thumbY, thumbW, thumbH)
-        pdfDoc.drawImage("images/test3.bmp", thX + 3, thumbY + 3, thumbW - 6, thumbH - 6)
+        pdfDoc.drawImage(C_IMAGE_TEST3, thX + 3, thumbY + 3, thumbW - 6, thumbH - 6)
         pdfDoc.setFont(PDF_HELVETICA, 8)
         pdfDoc.setTextColor("gray")
         pdfDoc.drawTextCentered("BMP", thX + thumbW / 2, thumbY - 12)
@@ -397,7 +401,7 @@ func main
         pdfDoc.setStrokeColor([180, 180, 180])
         pdfDoc.setLineWidth(0.5)
         pdfDoc.drawFilledRect(imgX - 3, imgY - 3, imgW + 6, imgH + 6)
-        pdfDoc.drawImage("images/test1.png", imgX, imgY, imgW, imgH)
+        pdfDoc.drawImage(C_IMAGE_TEST1, imgX, imgY, imgW, imgH)
         
         # Text flows beside the image (narrower width)
         pdfDoc.setFont(PDF_HELVETICA, 11)
@@ -436,7 +440,7 @@ func main
         pdfDoc.setStrokeColor([180, 180, 180])
         pdfDoc.setLineWidth(0.5)
         pdfDoc.drawFilledRect(imgX - 3, imgY - 3, imgW + 6, imgH + 6)
-        pdfDoc.drawImage("images/test2.jpg", imgX, imgY, imgW, imgH)
+        pdfDoc.drawImage(C_IMAGE_TEST2, imgX, imgY, imgW, imgH)
         
         # Text flows to the right of image
         pdfDoc.setFont(PDF_HELVETICA, 11)
@@ -489,37 +493,37 @@ func main
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.setLineWidth(0.5)
         pdfDoc.drawRect(71, 649, 82, 62)
-        pdfDoc.drawImage("images/test2.jpg", 72, 650, 80, 60)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 72, 650, 80, 60)
         
         # Medium
         pdfDoc.drawText("Medium (200 x 150)", 200, 720)
         
         pdfDoc.drawRect(199, 559, 202, 152)
-        pdfDoc.drawImage("images/test2.jpg", 200, 560, 200, 150)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 200, 560, 200, 150)
         
         # Large
         pdfDoc.drawText("Large (400 x 250)", 72, 530)
         
         pdfDoc.drawRect(71, 269, 402, 252)
-        pdfDoc.drawImage("images/test2.jpg", 72, 270, 400, 250)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 72, 270, 400, 250)
         
         # Stretched
         pdfDoc.drawText("Stretched Wide (450 x 80)", 72, 240)
         
         pdfDoc.drawRect(71, 149, 452, 82)
-        pdfDoc.drawImage("images/test2.jpg", 72, 150, 450, 80)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 72, 150, 450, 80)
 
     elseif img1Exists
         pdfDoc.setFont(PDF_HELVETICA_BOLD, 12)
         pdfDoc.setTextColor("black")
         pdfDoc.drawText("Small (80 x 60)", 72, 720)
-        pdfDoc.drawImage("images/test1.png", 72, 650, 80, 60)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 72, 650, 80, 60)
         
         pdfDoc.drawText("Medium (200 x 150)", 200, 720)
-        pdfDoc.drawImage("images/test1.png", 200, 560, 200, 150)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 200, 560, 200, 150)
         
         pdfDoc.drawText("Large (400 x 250)", 72, 530)
-        pdfDoc.drawImage("images/test1.png", 72, 270, 400, 250)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 72, 270, 400, 250)
     else
         pdfDoc.setFont(PDF_HELVETICA, 14)
         pdfDoc.setTextColor("red")
@@ -616,7 +620,7 @@ func main
     pdfDoc.drawTextCentered("PNG", 72 + (imgW + 10) / 2, curY + 10)
 
     if img1Exists
-        pdfDoc.drawImage("images/test1.png", 77, curY - imgH, imgW, imgH)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 77, curY - imgH, imgW, imgH)
     ok
 
     # JPEG
@@ -630,7 +634,7 @@ func main
     pdfDoc.drawTextCentered("JPEG", startX2 + (imgW + 10) / 2, curY + 10)
 
     if img2Exists
-        pdfDoc.drawImage("images/test2.jpg", startX2 + 5, curY - imgH, imgW, imgH)
+        pdfDoc.drawImage(C_IMAGE_TEST2, startX2 + 5, curY - imgH, imgW, imgH)
     ok
 
     # BMP
@@ -644,7 +648,7 @@ func main
     pdfDoc.drawTextCentered("BMP", startX3 + (imgW + 10) / 2, curY + 10)
 
     if img3Exists
-        pdfDoc.drawImage("images/test3.bmp", startX3 + 5, curY - imgH, imgW, imgH)
+        pdfDoc.drawImage(C_IMAGE_TEST3, startX3 + 5, curY - imgH, imgW, imgH)
     ok
 
     # === Page 3: Full Size Showcase ===
@@ -667,26 +671,26 @@ func main
     if img1Exists
         pdfDoc.setFont(PDF_HELVETICA_BOLD, 11)
         pdfDoc.setTextColor([41, 98, 255])
-        pdfDoc.drawText("images/test1.png", 72, curY)
+        pdfDoc.drawText(C_IMAGE_TEST1, 72, curY)
         curY -= 10
         
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.setLineWidth(0.5)
         pdfDoc.drawRect(71, curY - 201, 453, 202)
-        pdfDoc.drawImage("images/test1.png", 72, curY - 200, 451, 200)
+        pdfDoc.drawImage(C_IMAGE_TEST1, 72, curY - 200, 451, 200)
         curY -= 220
     ok
 
     if img2Exists
         pdfDoc.setFont(PDF_HELVETICA_BOLD, 11)
         pdfDoc.setTextColor([234, 67, 53])
-        pdfDoc.drawText("images/test2.jpg", 72, curY)
+        pdfDoc.drawText(C_IMAGE_TEST2, 72, curY)
         curY -= 10
         
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.setLineWidth(0.5)
         pdfDoc.drawRect(71, curY - 201, 453, 202)
-        pdfDoc.drawImage("images/test2.jpg", 72, curY - 200, 451, 200)
+        pdfDoc.drawImage(C_IMAGE_TEST2, 72, curY - 200, 451, 200)
         curY -= 220
     ok
 
@@ -698,13 +702,13 @@ func main
         
         pdfDoc.setFont(PDF_HELVETICA_BOLD, 11)
         pdfDoc.setTextColor([52, 168, 83])
-        pdfDoc.drawText("images/test3.bmp", 72, curY)
+        pdfDoc.drawText(C_IMAGE_TEST3, 72, curY)
         curY -= 10
         
         pdfDoc.setStrokeColor([200, 200, 200])
         pdfDoc.setLineWidth(0.5)
         pdfDoc.drawRect(71, curY - 201, 453, 202)
-        pdfDoc.drawImage("images/test3.bmp", 72, curY - 200, 451, 200)
+        pdfDoc.drawImage(C_IMAGE_TEST3, 72, curY - 200, 451, 200)
     ok
 
     if pdfDoc.save("demo_images_report.pdf")
