@@ -7,7 +7,7 @@ PDFLib is a pure Ring implementation for generating PDF 1.4 files with no extern
 ## Features
 
 - **Page management** — multiple pages, sizes (A4, Letter, Legal, etc.), portrait/landscape orientation, margins
-- **Text** — 14 built-in standard fonts, sizes, colors, left/center/right alignment
+- **Text** — 14 PDF standard fonts (no font files needed; supplied by every PDF viewer), sizes, colors, left/center/right alignment
 - **Paragraphs** — word-wrapping with configurable line height and alignment
 - **Arabic / Unicode text** — TrueType font loading, contextual letter shaping (isolated/initial/medial/final forms), right-to-left layout, RTL paragraph word-wrap, mixed Arabic/Latin documents
 - **Shapes** — rectangles, circles, ellipses, lines, polygons; stroke, fill, or both
@@ -73,7 +73,7 @@ For A4 paper (595 × 842 pt), the top of the page is y ≈ 842. For typical docu
 pdf = new PDFWriter()
 ```
 
-Creates a new PDF document with one blank A4 page. All 14 standard fonts are pre-registered.
+Creates a new PDF document with one blank A4 page. All 14 PDF standard fonts are pre-registered and ready to use — no font files required.
 
 ---
 
@@ -117,7 +117,13 @@ Creates a new PDF document with one blank A4 page. All 14 standard fonts are pre
 
 ---
 
-### Standard Fonts
+### Fonts
+
+PDFLib supports two categories of fonts: **PDF standard fonts** for Latin text, and **TrueType fonts** for Arabic/Unicode text.
+
+#### PDF Standard Fonts
+
+The PDF specification (ISO 32000) defines 14 standard fonts that every conforming PDF viewer is required to have built in. PDFLib references these by name only — **no font files are shipped or embedded**; the viewer supplies the glyphs. This makes standard-font PDFs very small.
 
 Set the active font with `setFont(fontName, size)` or change only the size with `setFontSize(size)`.
 
@@ -126,40 +132,41 @@ pdf.setFont(PDF_HELVETICA_BOLD, 18)
 pdf.setFontSize(12)
 ```
 
-| Constant | Font |
-|----------|------|
-| `PDF_HELVETICA` | Helvetica |
-| `PDF_HELVETICA_BOLD` | Helvetica Bold |
-| `PDF_HELVETICA_ITALIC` | Helvetica Italic |
-| `PDF_HELVETICA_BOLDITALIC` | Helvetica Bold Italic |
-| `PDF_TIMES` | Times Roman |
-| `PDF_TIMES_BOLD` | Times Bold |
-| `PDF_TIMES_ITALIC` | Times Italic |
-| `PDF_TIMES_BOLDITALIC` | Times Bold Italic |
-| `PDF_COURIER` | Courier (monospace) |
-| `PDF_COURIER_BOLD` | Courier Bold |
-| `PDF_COURIER_ITALIC` | Courier Italic |
-| `PDF_COURIER_BOLDITALIC` | Courier Bold Italic |
-| `PDF_SYMBOL` | Symbol |
-| `PDF_ZAPFDINGBATS` | ZapfDingbats |
+| Constant | PDF Font Name | Style |
+|----------|---------------|-------|
+| `PDF_HELVETICA` | Helvetica | Sans-serif |
+| `PDF_HELVETICA_BOLD` | Helvetica-Bold | Sans-serif bold |
+| `PDF_HELVETICA_ITALIC` | Helvetica-Oblique | Sans-serif italic |
+| `PDF_HELVETICA_BOLDITALIC` | Helvetica-BoldOblique | Sans-serif bold italic |
+| `PDF_TIMES` | Times-Roman | Serif |
+| `PDF_TIMES_BOLD` | Times-Bold | Serif bold |
+| `PDF_TIMES_ITALIC` | Times-Italic | Serif italic |
+| `PDF_TIMES_BOLDITALIC` | Times-BoldItalic | Serif bold italic |
+| `PDF_COURIER` | Courier | Monospace |
+| `PDF_COURIER_BOLD` | Courier-Bold | Monospace bold |
+| `PDF_COURIER_ITALIC` | Courier-Oblique | Monospace italic |
+| `PDF_COURIER_BOLDITALIC` | Courier-BoldOblique | Monospace bold italic |
+| `PDF_SYMBOL` | Symbol | Greek and mathematical symbols |
+| `PDF_ZAPFDINGBATS` | ZapfDingbats | Decorative dingbats |
+
+> **Note:** Standard fonts only cover the Latin-1 (Western) character set. They do not support Arabic, Hebrew, Chinese, or other non-Latin scripts. For Arabic text, a TrueType font must be loaded separately — see the [Arabic / Unicode Text](#arabic--unicode-text) section.
+
+#### TrueType Fonts (for Arabic / Unicode)
+
+To render Arabic or other Unicode text, load a `.ttf` file and give it an alias. The font data is fully embedded in the output PDF. The library ships with `font/arial.ttf` in the samples folder as a ready-to-use example.
+
+```ring
+pdf.loadArabicFont("font/arial.ttf", "Arabic")  # loadArabicFont is an alias for loadTTFFont
+pdf.setFont("Arabic", 24)
+```
+
+Any TrueType font file can be used; the alias becomes the font name passed to `setFont`. See the [Arabic / Unicode Text](#arabic--unicode-text) section for the full drawing API.
 
 ---
 
 ### Arabic / Unicode Text
 
-PDFLib includes a pure Ring Arabic text engine supporting UTF-8 decoding, contextual letter shaping, and right-to-left layout. A TrueType font (`.ttf`) must be loaded before drawing Arabic text.
-
-#### Loading a TrueType Font
-
-```ring
-# loadArabicFont is an alias for loadTTFFont
-pdf.loadArabicFont("font/arial.ttf", "Arabic")
-
-# The second argument becomes the font alias used with setFont
-pdf.setFont("Arabic", 24)
-```
-
-Both `loadArabicFont` and `loadTTFFont` accept the same parameters and are interchangeable.
+PDFLib includes a pure Ring Arabic text engine supporting UTF-8 decoding, contextual letter shaping (isolated/initial/medial/final letter forms), bidi reordering, and right-to-left layout. A TrueType font must be loaded first — see [TrueType Fonts](#truetype-fonts-for-arabic--unicode) above.
 
 #### Drawing Arabic Text
 
