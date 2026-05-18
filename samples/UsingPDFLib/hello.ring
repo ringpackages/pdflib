@@ -6,3 +6,5 @@ new PDFWriter() {
 	drawText("Hello, World!", 72, 700)
 	save("hello.pdf")
 }
+
+? "Done..."

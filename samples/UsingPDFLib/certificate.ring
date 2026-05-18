@@ -15,3 +15,5 @@ new PDFWriter() {
 	drawTextCentered("For outstanding contributions to the team", 420, 300)
 	save("certificate.pdf")
 }
+
+? "Done..."

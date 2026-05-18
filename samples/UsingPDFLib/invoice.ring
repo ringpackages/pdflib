@@ -25,3 +25,5 @@ new PDFWriter() {
 	drawTextRight("Total: $2,830.00", 540, 540)
 	save("invoice.pdf")
 }
+
+? "Done..."

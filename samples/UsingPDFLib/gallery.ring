@@ -7,3 +7,5 @@ new PDFWriter() {
 	drawImage("images/test3.bmp", 72, 380, 180, 140)
 	save("gallery.pdf")
 }
+
+? "Done..."
