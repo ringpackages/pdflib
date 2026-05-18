@@ -1,5 +1,52 @@
 # PDFLib — PDF Generation Library for Ring
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Coordinate System](#coordinate-system)
+- [API Reference](#api-reference)
+  - [Constructor](#constructor)
+  - [Document Settings](#document-settings)
+  - [Page Sizes](#page-sizes)
+  - [Page Management](#page-management)
+  - [Fonts](#fonts)
+    - [PDF Standard Fonts](#pdf-standard-fonts)
+    - [TrueType Fonts (for Arabic / Unicode)](#truetype-fonts-for-arabic--unicode)
+  - [Arabic / Unicode Text](#arabic--unicode-text)
+    - [Drawing Arabic Text](#drawing-arabic-text)
+    - [Mixed Arabic/Latin Documents](#mixed-arabiclatin-documents)
+  - [Colors](#colors)
+  - [Text Drawing](#text-drawing)
+  - [Paragraphs](#paragraphs)
+  - [Shapes](#shapes)
+    - [Rectangles](#rectangles)
+    - [Circles and Ellipses](#circles-and-ellipses)
+    - [Lines](#lines)
+    - [Polygons](#polygons)
+    - [Line Style](#line-style)
+  - [Images](#images)
+  - [Tables](#tables)
+  - [Lists](#lists)
+  - [Charts](#charts)
+    - [Bar Chart](#bar-chart)
+    - [Pie Chart](#pie-chart)
+  - [Page Numbers](#page-numbers)
+  - [Headers and Footers](#headers-and-footers)
+  - [Watermarks](#watermarks)
+  - [Graphics State](#graphics-state)
+  - [Output](#output)
+- [Examples](#examples)
+  - [Invoice](#invoice)
+  - [Certificate](#certificate)
+  - [Arabic Document](#arabic-document)
+  - [Images](#images-1)
+- [Technical Notes](#technical-notes)
+
+---
+
 ## Overview
 
 PDFLib is a pure Ring implementation for generating PDF 1.4 files with no external dependencies. Output is compatible with any PDF viewer including Adobe Acrobat, Foxit Reader, and web browsers.
