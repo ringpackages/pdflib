@@ -14,7 +14,7 @@
   - [Page Management](#page-management)
   - [Fonts](#fonts)
     - [PDF Standard Fonts](#pdf-standard-fonts)
-    - [TrueType Fonts (for Arabic / Unicode)](#truetype-fonts-for-arabic--unicode)
+    - [TrueType Fonts](#truetype-fonts)
   - [Arabic / Unicode Text](#arabic--unicode-text)
     - [Drawing Arabic Text](#drawing-arabic-text)
     - [Mixed Arabic/Latin Documents](#mixed-arabiclatin-documents)
@@ -56,7 +56,7 @@ PDFLib is a pure Ring implementation for generating PDF 1.4 files with no extern
 - **Page management** — multiple pages, sizes (A4, Letter, Legal, etc.), portrait/landscape orientation, margins
 - **Text** — 14 PDF standard fonts (no font files needed; supplied by every PDF viewer), sizes, colors, left/center/right alignment
 - **Paragraphs** — word-wrapping with configurable line height and alignment
-- **Arabic / Unicode text** — TrueType font loading, contextual letter shaping (isolated/initial/medial/final forms), right-to-left layout, RTL paragraph word-wrap, mixed Arabic/Latin documents
+- **Arabic / Unicode text** — any TTF can be loaded and embedded; full shaping and RTL pipeline for Arabic; direct glyph mapping for Latin extensions, Greek, Cyrillic, and CJK; complex scripts (Devanagari, Thai, etc.) are not supported
 - **Shapes** — rectangles, circles, ellipses, lines, polygons; stroke, fill, or both
 - **Tables** — headers, alternating row colors, borders, explicit or auto column widths, Arabic-aware cell rendering
 - **Lists** — bullet lists and numbered lists
@@ -198,22 +198,36 @@ pdf.setFontSize(12)
 
 > **Note:** Standard fonts only cover the Latin-1 (Western) character set. They do not support Arabic, Hebrew, Chinese, or other non-Latin scripts. For Arabic text, a TrueType font must be loaded separately — see the [Arabic / Unicode Text](#arabic--unicode-text) section.
 
-#### TrueType Fonts (for Arabic / Unicode)
+#### TrueType Fonts
 
-To render Arabic or other Unicode text, load a `.ttf` file and give it an alias. The font data is fully embedded in the output PDF. The library ships with `font/arial.ttf` in the samples folder as a ready-to-use example.
+Any `.ttf` file can be loaded. The font is fully parsed (cmap, hmtx, glyf, head, hhea, loca, OS/2, and post tables) and embedded in the output PDF as a CIDFont/Type0 object with a ToUnicode CMap. No external tool or C library is needed.
 
 ```ring
-pdf.loadArabicFont("font/arial.ttf", "Arabic")  # loadArabicFont is an alias for loadTTFFont
+pdf.loadTTFFont("font/arial.ttf", "Arabic")    # general method
+pdf.loadArabicFont("font/arial.ttf", "Arabic") # alias — identical behaviour
 pdf.setFont("Arabic", 24)
 ```
 
-Any TrueType font file can be used; the alias becomes the font name passed to `setFont`. See the [Arabic / Unicode Text](#arabic--unicode-text) section for the full drawing API.
+The second argument is a free-form alias used with `setFont`. The library ships `font/arial.ttf` in the samples folder as a ready-to-use example; any other TTF can be substituted.
+
+**Script support matrix:**
+
+| Script | Method to use | Notes |
+|--------|---------------|-------|
+| Arabic | `drawArabicText` / `drawArabicParagraph` | Full support: contextual shaping, RTL layout, word wrap |
+| Latin extensions (é, ü, ñ …) | `drawText` | Works — direct codepoint-to-glyph mapping, no shaping needed |
+| Greek, Cyrillic | `drawText` | Works — no shaping required |
+| CJK (Chinese, Japanese, Korean) | `drawText` | Works — one codepoint maps to one glyph |
+| Hebrew (basic) | `drawText` | Glyphs render but no RTL layout support outside the Arabic path |
+| Devanagari (Hindi), Thai, Khmer, Myanmar | — | Not supported — these scripts require a shaping engine not present in the library |
+
+> **In short:** load any TTF and use `drawText` for scripts that don't need complex shaping. Use the `drawArabicText` family specifically for Arabic, which is the only script with a full shaping and bidirectional layout pipeline implemented.
 
 ---
 
 ### Arabic / Unicode Text
 
-PDFLib includes a pure Ring Arabic text engine supporting UTF-8 decoding, contextual letter shaping (isolated/initial/medial/final letter forms), bidi reordering, and right-to-left layout. A TrueType font must be loaded first — see [TrueType Fonts](#truetype-fonts-for-arabic--unicode) above.
+PDFLib includes a pure Ring Arabic text engine supporting UTF-8 decoding, contextual letter shaping (isolated/initial/medial/final letter forms), bidi reordering, and right-to-left layout. A TrueType font must be loaded first — see [TrueType Fonts](#truetype-fonts) above.
 
 #### Drawing Arabic Text
 
