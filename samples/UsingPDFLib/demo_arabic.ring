@@ -1,0 +1,324 @@
+/*
+    PDFLib - Arabic Text Demo
+    =========================
+    Demonstrates Arabic text rendering with:
+    - Contextual letter shaping (isolated/initial/medial/final)
+    - Right-to-left text layout
+    - Mixed Arabic/English text
+    - Arabic paragraphs with word wrapping   
+*/
+
+load "pdflib.ring"
+
+func main
+
+    ? "=============================================="
+    ? "   PDFLib - Arabic Text Demo"
+    ? "=============================================="
+    ? ""
+
+    arabicFontFile = "font/arial.ttf"
+
+    ? "Using font: " + arabicFontFile
+    ? ""
+
+    # ------------------------------------------------------------------
+    # Demo 1: Basic Arabic Text
+    # ------------------------------------------------------------------
+    ? "Demo 1: Basic Arabic text..."
+
+    pdf = new PDFWriter()
+    pdf.setTitle("Arabic Text Demo")
+    pdf.setAuthor("RingPDFLib")
+
+    # Load Arabic font
+    pdf.loadArabicFont(arabicFontFile, "Arabic")
+
+    # Title bar
+    pdf.setFillColor([0, 100, 60])
+    pdf.drawFilledRectNoStroke(0, 790, 595.28, 52)
+
+    pdf.setFont(PDF_HELVETICA_BOLD, 22)
+    pdf.setTextColor("white")
+    pdf.drawText("RingPDFLib - Arabic Text Support", 72, 812)
+
+    pdf.setFont(PDF_HELVETICA, 11)
+    pdf.drawTextRight("Pure Ring Implementation", 523, 796)
+
+    # Section 1: Basic Arabic Words
+    pdf.setFont(PDF_HELVETICA_BOLD, 16)
+    pdf.setTextColor([0, 100, 60])
+    pdf.drawText("1. Basic Arabic Text", 72, 750)
+
+    pdf.setStrokeColor([0, 100, 60])
+    pdf.setLineWidth(2)
+    pdf.drawLine(72, 743, 300, 743)
+
+    # Arabic text samples
+    pdf.setFont("Arabic", 28)
+    pdf.setTextColor("black")
+
+    # "Bismillah" (In the name of God)
+    pdf.drawArabicText("بسم الله الرحمن الرحيم", 523, 700)
+
+    # "Hello World"
+    pdf.setFont("Arabic", 24)
+    pdf.drawArabicText("مرحبا بالعالم", 523, 660)
+
+    # "Ring Programming Language"
+    pdf.drawArabicText("لغة البرمجة رينج", 523, 625)
+
+    # "King Saud University"
+    pdf.drawArabicText("جامعة الملك سعود", 523, 590)
+
+    # English label
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Bismillah al-Rahman al-Rahim", 72, 700)
+    pdf.drawText("Marhaba bil-Alam (Hello World)", 72, 660)
+    pdf.drawText("Ring Programming Language", 72, 625)
+    pdf.drawText("King Saud University", 72, 590)
+
+    # Section 2: Letter Forms Demonstration
+    pdf.setFont(PDF_HELVETICA_BOLD, 16)
+    pdf.setTextColor([0, 100, 60])
+    pdf.drawText("2. Contextual Letter Shaping", 72, 540)
+
+    pdf.setStrokeColor([0, 100, 60])
+    pdf.setLineWidth(2)
+    pdf.drawLine(72, 533, 340, 533)
+
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Arabic letters change shape based on position:", 72, 515)
+    pdf.drawText("Isolated - Initial - Medial - Final", 72, 500)
+
+    # Show different words that demonstrate shaping
+    pdf.setFont("Arabic", 22)
+    pdf.setTextColor("black")
+
+    # "Muhammad" - shows medial/initial/final forms
+    pdf.drawArabicText("محمود", 523, 470)
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Mahmoud", 72, 470)
+
+    # "Abdullah" 
+    pdf.setFont("Arabic", 22)
+    pdf.setTextColor("black")
+    pdf.drawArabicText("فايد", 523, 440)
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Fayed", 72, 440)
+
+    # "Computer Science"
+    pdf.setFont("Arabic", 22)
+    pdf.setTextColor("black")
+    pdf.drawArabicText("علوم الحاسب", 523, 410)
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Computer Science", 72, 410)
+
+    # "Artificial Intelligence"
+    pdf.setFont("Arabic", 22)
+    pdf.setTextColor("black")
+    pdf.drawArabicText("الذكاء الاصطناعي", 523, 380)
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Artificial Intelligence", 72, 380)
+
+    # "Research and Development"
+    pdf.setFont("Arabic", 22)
+    pdf.setTextColor("black")
+    pdf.drawArabicText("البحث والتطوير", 523, 350)
+    pdf.setFont(PDF_HELVETICA, 10)
+    pdf.setTextColor("gray")
+    pdf.drawText("Research and Development", 72, 350)
+
+    # Section 3: Arabic Paragraph
+    pdf.setFont(PDF_HELVETICA_BOLD, 16)
+    pdf.setTextColor([0, 100, 60])
+    pdf.drawText("3. Arabic Paragraph (RTL Word Wrap)", 72, 300)
+
+    pdf.setStrokeColor([0, 100, 60])
+    pdf.setLineWidth(2)
+    pdf.drawLine(72, 293, 380, 293)
+
+    # Background for paragraph
+    pdf.setFillColor([250, 248, 240])
+    pdf.setStrokeColor([200, 190, 170])
+    pdf.setLineWidth(1)
+    pdf.drawFilledRect(72, 130, 451, 150)
+
+    pdf.setFont("Arabic", 18)
+    pdf.setTextColor([40, 40, 40])
+    pdf.drawArabicParagraph("لغة البرمجة رينج هي لغة برمجة حديثة وسهلة التعلم تم تصميمها لتكون بسيطة وقوية في نفس الوقت وتدعم البرمجة الكائنية والبرمجة الوظيفية وتوفر مكتبات متعددة للتطوير", 523, 265, 441, 30)
+
+    # Footer note
+    pdf.setFont(PDF_HELVETICA, 9)
+    pdf.setTextColor("gray")
+    pdf.drawTextCentered("Generated by RingPDFLib with pure Ring Arabic text support", 297.64, 100)
+
+    if pdf.save("demo_arabic_text.pdf")
+        ? "  Created: demo_arabic_text.pdf"
+    else
+        ? "  FAILED: demo_arabic_text.pdf"
+    ok
+
+    # ------------------------------------------------------------------
+    # Demo 2: Arabic + English Mixed Document
+    # ------------------------------------------------------------------
+    ? "Demo 2: Mixed Arabic/English document..."
+
+    pdf = new PDFWriter()
+    pdf.setTitle("Mixed Language Document")
+    pdf.loadArabicFont(arabicFontFile, "Arabic")
+
+    # Header
+    pdf.setFillColor([25, 50, 100])
+    pdf.drawFilledRectNoStroke(0, 790, 595.28, 52)
+
+    # Draw English and Arabic title halves separately
+    pdf.setFont(PDF_HELVETICA_BOLD, 20)
+    pdf.setTextColor("white")
+    pdf.drawTextCentered("Research Summary", 200, 810)
+
+    pdf.setFont("Arabic", 22)
+    pdf.setTextColor("white")
+    pdf.drawArabicText("ملخص البحث", 460, 810)
+
+    # Left column: English
+    pdf.setFont(PDF_HELVETICA_BOLD, 14)
+    pdf.setTextColor([25, 50, 100])
+    pdf.drawText("Abstract", 72, 750)
+
+    pdf.setStrokeColor([25, 50, 100])
+    pdf.setLineWidth(1.5)
+    pdf.drawLine(72, 744, 160, 744)
+
+    pdf.setFont(PDF_HELVETICA, 11)
+    pdf.setTextColor("black")
+    curY = pdf.drawParagraph("This paper presents a novel approach to developing Terminal User Interface (TUI) frameworks using prompt-driven development methodology with large language models.", 72, 725, 200, 15)
+    curY -= 10
+    curY = pdf.drawParagraph("The Ring programming language serves as the implementation platform, demonstrating the effectiveness of AI-assisted software development.", 72, curY, 200, 15)
+
+    # Right column: Arabic
+    pdf.setFont("Arabic", 16)
+    pdf.setTextColor([25, 50, 100])
+    pdf.drawArabicText("الملخص", 523, 750)
+
+    pdf.setStrokeColor([25, 50, 100])
+    pdf.drawLine(523, 744, 470, 744)
+
+    pdf.setFont("Arabic", 14)
+    pdf.setTextColor("black")
+    curY2 = pdf.drawArabicParagraph("يقدم هذا البحث منهجية جديدة لتطوير واجهات المستخدم النصية باستخدام التطوير الموجه بالأوامر مع نماذج اللغة الكبيرة", 523, 722, 200, 22)
+    curY2 -= 10
+    curY2 = pdf.drawArabicParagraph("تعتبر لغة البرمجة رينج منصة التنفيذ الرئيسية لهذا المشروع", 523, curY2, 200, 22)
+
+    # Divider
+    minY = curY
+    if curY2 < minY minY = curY2 ok
+    minY -= 20
+
+    pdf.setStrokeColor([200, 200, 200])
+    pdf.setLineWidth(0.5)
+    pdf.drawLine(297, 750, 297, minY)
+
+    # Keywords section
+    minY -= 20
+    pdf.setFont(PDF_HELVETICA_BOLD, 12)
+    pdf.setTextColor([25, 50, 100])
+    pdf.drawText("Keywords:", 72, minY)
+
+    pdf.setFont(PDF_HELVETICA, 11)
+    pdf.setTextColor("black")
+    pdf.drawText("Ring Language, TUI, Prompt-Driven Development, AI", 155, minY)
+
+    pdf.setFont("Arabic", 14)
+    pdf.setTextColor([25, 50, 100])
+    pdf.drawArabicText("الكلمات المفتاحية:", 523, minY)
+
+    pdf.setFont("Arabic", 13)
+    pdf.setTextColor("black")
+    pdf.drawArabicText("رينج، واجهة نصية، ذكاء اصطناعي", 523, minY - 22)
+
+    # Table with bilingual content
+    minY -= 70
+    pdf.setFont(PDF_HELVETICA_BOLD, 14)
+    pdf.setTextColor([25, 50, 100])
+    pdf.drawText("Project Details", 72, minY)
+    pdf.setFont("Arabic", 16)
+    pdf.drawArabicText("تفاصيل المشروع", 523, minY)
+
+    minY -= 10
+
+    tableData = [
+        ["Field / الحقل", "Value / القيمة"],
+        ["Language / اللغة", "Ring / رينج"],
+        ["Framework / الإطار", "TUI / واجهة نصية"],
+        ["University / الجامعة", "King Saud / جامعة الملك سعود"],
+        ["Status / الحالة", "Active / نشط"]
+    ]
+
+    curY = pdf.drawTable(tableData, 72, minY, [200, 268], [
+        :headerBg = [25, 50, 100],
+        :headerFg = "white",
+        :evenRowBg = [240, 245, 255],
+        :rowHeight = 25,
+        :fontSize = 11,
+        :arabicFont = "Arabic"
+    ])
+
+    # Section: Pure Arabic Table
+    curY -= 30
+    pdf.setFont(PDF_HELVETICA_BOLD, 14)
+    pdf.setTextColor([25, 50, 100])
+    pdf.drawText("Pure Arabic Table", 72, curY)
+    pdf.setFont("Arabic", 16)
+    pdf.drawArabicText("جدول عربي", 523, curY)
+
+    curY -= 10
+
+    arabicTableData = [
+        ["الحقل", "القيمة"],
+        ["اللغة", "رينج"],
+        ["الإطار", "واجهة نصية"],
+        ["الجامعة", "جامعة الملك سعود"],
+        ["الحالة", "نشط"],
+        ["المدينة", "الرياض"]
+    ]
+
+    curY = pdf.drawTable(arabicTableData, 72, curY, [200, 268], [
+        :headerBg = [25, 50, 100],
+        :headerFg = "white",
+        :evenRowBg = [240, 245, 255],
+        :rowHeight = 25,
+        :fontSize = 11,
+        :arabicFont = "Arabic"
+    ])
+
+    if pdf.save("demo_arabic_mixed.pdf")
+        ? "  Created: demo_arabic_mixed.pdf"
+    else
+        ? "  FAILED: demo_arabic_mixed.pdf"
+    ok
+
+    # ------------------------------------------------------------------
+    ? ""
+    ? "=============================================="
+    ? "   Arabic demos completed!"
+    ? "=============================================="
+    ? ""
+    ? "Created files:"
+    ? "  1. demo_arabic_text.pdf  - Basic Arabic text with shaping"
+    ? "  2. demo_arabic_mixed.pdf - Mixed Arabic/English document"
+    ? ""
+    ? "Features demonstrated:"
+    ? "  - UTF-8 Arabic text decoding"
+    ? "  - Contextual letter shaping (4 forms per letter)"
+    ? "  - Right-to-left text layout"
+    ? "  - Arabic paragraph with word wrapping"
+    ? "  - Mixed bilingual documents and tables"
+    ? "  - Pure Arabic tables"
+    ? "  - TrueType font embedding with CIDFont"

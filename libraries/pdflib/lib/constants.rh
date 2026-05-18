@@ -1,0 +1,47 @@
+# ============================================================================
+# Constants
+# ============================================================================
+
+# Page sizes [width, height] in points (1 point = 1/72 inch)
+PDF_A4          = [595.28, 841.89]
+PDF_A3          = [841.89, 1190.55]
+PDF_A5          = [419.53, 595.28]
+PDF_LETTER      = [612, 792]
+PDF_LEGAL       = [612, 1008]
+PDF_TABLOID     = [792, 1224]
+
+# Orientations
+PDF_PORTRAIT    = 0
+PDF_LANDSCAPE   = 1
+
+# Font families
+PDF_HELVETICA       = "Helvetica"
+PDF_HELVETICA_BOLD  = "Helvetica-Bold"
+PDF_HELVETICA_ITALIC = "Helvetica-Oblique"
+PDF_HELVETICA_BOLDITALIC = "Helvetica-BoldOblique"
+PDF_TIMES           = "Times-Roman"
+PDF_TIMES_BOLD      = "Times-Bold"
+PDF_TIMES_ITALIC    = "Times-Italic"
+PDF_TIMES_BOLDITALIC = "Times-BoldItalic"
+PDF_COURIER         = "Courier"
+PDF_COURIER_BOLD    = "Courier-Bold"
+PDF_COURIER_ITALIC  = "Courier-Oblique"
+PDF_COURIER_BOLDITALIC = "Courier-BoldOblique"
+PDF_SYMBOL          = "Symbol"
+PDF_ZAPFDINGBATS    = "ZapfDingbats"
+
+# Text alignment
+PDF_ALIGN_LEFT      = 0
+PDF_ALIGN_CENTER    = 1
+PDF_ALIGN_RIGHT     = 2
+
+# Line cap styles
+PDF_CAP_BUTT        = 0
+PDF_CAP_ROUND       = 1
+PDF_CAP_SQUARE      = 2
+
+# Line join styles
+PDF_JOIN_MITER      = 0
+PDF_JOIN_ROUND      = 1
+PDF_JOIN_BEVEL      = 2
+
