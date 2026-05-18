@@ -327,7 +327,6 @@ func shapeArabicText codepoints
     cpLen = len(codepoints)
     if cpLen = 0 return [] ok
     
-    # Use cached indexed lookup for O(1) access
     # Arabic base letters are in range 0x0621-0x064A (42 entries)
     if $_arabicShapingLookup = NULL
         $_arabicShapingLookup = list(42)
@@ -467,7 +466,7 @@ func shapeArabicText codepoints
     
     return result
 
-# Find entry in shaping table by base codepoint - O(1) indexed lookup
+# Find entry in shaping table by base codepoint
 func findShapingEntry table, cp
     tableLen = len(table)
     for i = 1 to tableLen
@@ -477,7 +476,6 @@ func findShapingEntry table, cp
     next
     return NULL
 
-# Fast O(1) lookup using pre-built index array
 func findShapingEntryFast shapingLookup, cp
     idx = cp - 0x0621 + 1
     if idx >= 1 and idx <= 42
