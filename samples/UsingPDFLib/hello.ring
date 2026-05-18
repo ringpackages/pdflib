@@ -1,5 +1,7 @@
 load "pdflib.ring"
 
+? "Generate File: " + substr(filename(),".ring",".pdf")
+
 new PDFWriter() {
 	setTitle("My First PDF")
 	setFont(PDF_HELVETICA_BOLD, 24)

@@ -1,5 +1,7 @@
 load "pdflib.ring"
 
+? "Generate File: " + substr(filename(),".ring",".pdf")
+
 new PDFWriter() {
 	setOrientation(PDF_LANDSCAPE)
 	setStrokeColor("gold")

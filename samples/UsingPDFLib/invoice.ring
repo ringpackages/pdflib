@@ -7,6 +7,8 @@ items = [
     ["Domain Name", "2", "$15", "$30"]
 ]
 
+? "Generate File: " + substr(filename(),".ring",".pdf")
+
 new PDFWriter() {
 	setTitle("Invoice #1001")
 	setFont(PDF_HELVETICA_BOLD, 28)

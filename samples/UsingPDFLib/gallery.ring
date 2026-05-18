@@ -1,5 +1,7 @@
 load "pdflib.ring"
 
+? "Generate File: " + substr(filename(),".ring",".pdf")
+
 new PDFWriter() {
 	setTitle("Image Gallery")
 	drawImage("images/test2.jpg", 72, 560, 200, 150)
