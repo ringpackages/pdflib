@@ -1,12 +1,15 @@
 load "pdflib.ring"
 
-? "Generate File: " + substr(filename(),".ring",".pdf")
+func main
 
-new PDFWriter() {
-	setTitle("My First PDF")
-	setFont(PDF_HELVETICA_BOLD, 24)
-	drawText("Hello, World!", 72, 700)
-	save("hello.pdf")
-}
+	cFileName = substr(filename(),".ring",".pdf")
+	? "Generate File: " + cFileName
 
-? "Done..."
+	new PDFWriter() {
+		setTitle("My First PDF")
+		setFont(PDF_HELVETICA_BOLD, 24)
+		drawText("Hello, World!", 72, 700)
+		save(cFileName)
+	}
+
+	? "Done..."
