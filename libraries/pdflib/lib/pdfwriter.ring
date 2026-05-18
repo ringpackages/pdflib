@@ -292,7 +292,7 @@ class PDFWriter
             :usedGlyphs = [],        # Track which glyphs are actually used
             :cidToUnicode = [],       # CID -> Unicode mappings for ToUnicode
             :cidToGlyph = [],         # CID -> GlyphID mappings (list of [cid, gid])
-            :cidToGlyphMap = [],      # Hash keys: "" + glyphID (for O(1) find())
+            :cidToGlyphMap = [],      # Hash keys: "" + glyphID 
             :cidToGlyphCIDs = []      # Parallel to cidToGlyphMap: the CID values
         ]
         
@@ -332,13 +332,11 @@ class PDFWriter
     
     # Register a glyph as used and return its CID
     # Uses sequential CID assignment (0, 1, 2, ...) with explicit CID→GID mapping
-    # Uses hash map for O(1) lookup instead of O(n) linear scan
     func registerGlyphMapping ttfIdx, unicode, glyphID
         # Use string key for hash lookup
         key = "" + glyphID
         cidToGlyphMap = aTTFFonts[ttfIdx][:cidToGlyphMap]
         
-        # O(1) hash lookup
         idx = find(cidToGlyphMap, key)
         if idx > 0
             # Already registered - return its CID
