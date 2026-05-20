@@ -147,8 +147,7 @@ func quickPDF filename, title, pages
     return writer.save(filename)
 
 # ============================================================================
-# ============================================================================
-# Image format parsers (pure Ring - no C library dependencies for parsing)
+# Image format parsers
 # ============================================================================
 
 # Parse PNG IHDR chunk for dimensions and color type
