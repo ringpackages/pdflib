@@ -3,7 +3,7 @@
 */
 
 load "stdlibcore.ring"
-load "constants.rh"
+load again "constants.rh"
 load "pdfwriter.ring"
 load "functions.ring"
 load "arabic.ring"
