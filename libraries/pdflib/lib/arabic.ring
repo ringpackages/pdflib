@@ -33,12 +33,6 @@ $glyphCache1 = []
 $glyphCache2 = []
 $glyphCacheReady = false
 
-# Arabic lead bytes for fast containsArabic check
-$arabicLeadByte1 = char(0xD8)
-$arabicLeadByte2 = char(0xD9)
-$arabicLeadByte3 = char(0xDA)
-$arabicLeadByte4 = char(0xDB)
-
 # Pre-built byte-to-hex lookup table (256 entries: "00", "01", ... "FF")
 $byteToHex = list(256)
 prepareByteToHex()
@@ -137,12 +131,9 @@ func isArabicLetter cp
 # Uses substr() find (C-level search) for each Arabic lead byte
 # Arabic block lead bytes: 0xD8-0xDB (U+0600-U+06FF)
 func containsArabic text
-    if substr(text, $arabicLeadByte1) > 0 return true ok
-    if substr(text, $arabicLeadByte2) > 0 return true ok
-    if substr(text, $arabicLeadByte3) > 0 return true ok
-    if substr(text, $arabicLeadByte4) > 0 return true ok
-    return false
-
+    return substr(text, char(0xD8)) or substr(text, char(0xD9)) or 
+           substr(text, char(0xD9)) or substr(text, char(0xDA)) 
+      
 # Split a mixed UTF-8 string into segments of Latin and Arabic text
 # Returns list of [text, isArabic] pairs
 # Example: "Field / الحقل" -> [["Field / ", false], ["الحقل", true]]
