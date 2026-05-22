@@ -13,46 +13,8 @@ func pdfColorToRGB color
     
     color = lower(trim(color))
     
-    namedColors = [
-        :black = [0, 0, 0],
-        :white = [255, 255, 255],
-        :red = [255, 0, 0],
-        :green = [0, 128, 0],
-        :blue = [0, 0, 255],
-        :yellow = [255, 255, 0],
-        :orange = [255, 165, 0],
-        :purple = [128, 0, 128],
-        :pink = [255, 192, 203],
-        :gray = [128, 128, 128],
-        :grey = [128, 128, 128],
-        :navy = [0, 0, 128],
-        :teal = [0, 128, 128],
-        :maroon = [128, 0, 0],
-        :silver = [192, 192, 192],
-        :lime = [0, 255, 0],
-        :aqua = [0, 255, 255],
-        :cyan = [0, 255, 255],
-        :fuchsia = [255, 0, 255],
-        :olive = [128, 128, 0],
-        :brown = [139, 69, 19],
-        :coral = [255, 127, 80],
-        :crimson = [220, 20, 60],
-        :gold = [255, 215, 0],
-        :indigo = [75, 0, 130],
-        :salmon = [250, 128, 114],
-        :steelblue = [70, 130, 180],
-        :tomato = [255, 99, 71],
-        :darkblue = [0, 0, 139],
-        :darkgreen = [0, 100, 0],
-        :darkred = [139, 0, 0],
-        :lightgray = [211, 211, 211],
-        :lightgrey = [211, 211, 211],
-        :darkgray = [64, 64, 64],
-        :darkgrey = [64, 64, 64]
-    ]
-    
-    if namedColors[color] != NULL
-        return namedColors[color]
+    if aNamedColors[color] != NULL
+        return aNamedColors[color]
     ok
     
     # Parse hex color
