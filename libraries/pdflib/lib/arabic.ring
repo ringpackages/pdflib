@@ -25,25 +25,28 @@
 # Letters that connect on both sides: all others
 
 # Global cache for shaping table (avoid rebuilding on every call)
-$_arabicShapingLookup = NULL
-$_hexChars = "0123456789ABCDEF"
+$arabicShapingLookup = NULL
+$hexChars = "0123456789ABCDEF"
 
 # Glyph ID cache (initialized by initGlyphIDCache after font load)
-$_glyphCache1 = []
-$_glyphCache2 = []
-$_glyphCacheReady = false
+$glyphCache1 = []
+$glyphCache2 = []
+$glyphCacheReady = false
 
 # Arabic lead bytes for fast containsArabic check
-$_arabicLeadByte1 = char(0xD8)
-$_arabicLeadByte2 = char(0xD9)
-$_arabicLeadByte3 = char(0xDA)
-$_arabicLeadByte4 = char(0xDB)
+$arabicLeadByte1 = char(0xD8)
+$arabicLeadByte2 = char(0xD9)
+$arabicLeadByte3 = char(0xDA)
+$arabicLeadByte4 = char(0xDB)
 
 # Pre-built byte-to-hex lookup table (256 entries: "00", "01", ... "FF")
-$_byteToHex = list(256)
-for _bh = 0 to 255
-    $_byteToHex[_bh + 1] = $_hexChars[(_bh >> 4) + 1] + $_hexChars[(_bh & 0x0F) + 1]
-next
+$byteToHex = list(256)
+prepareByteToHex()
+
+func prepareByteToHex
+    for nIndex = 0 to 255
+        $byteToHex[nIndex + 1] = $hexChars[(nIndex >> 4) + 1] + $hexChars[(nIndex & 0x0F) + 1]
+    next
 
 # ============================================================================
 # UTF-8 Decoding
@@ -134,10 +137,10 @@ func isArabicLetter cp
 # Uses substr() find (C-level search) for each Arabic lead byte
 # Arabic block lead bytes: 0xD8-0xDB (U+0600-U+06FF)
 func containsArabic text
-    if substr(text, $_arabicLeadByte1) > 0 return true ok
-    if substr(text, $_arabicLeadByte2) > 0 return true ok
-    if substr(text, $_arabicLeadByte3) > 0 return true ok
-    if substr(text, $_arabicLeadByte4) > 0 return true ok
+    if substr(text, $arabicLeadByte1) > 0 return true ok
+    if substr(text, $arabicLeadByte2) > 0 return true ok
+    if substr(text, $arabicLeadByte3) > 0 return true ok
+    if substr(text, $arabicLeadByte4) > 0 return true ok
     return false
 
 # Split a mixed UTF-8 string into segments of Latin and Arabic text
@@ -235,17 +238,17 @@ func shapeArabicText codepoints
     if cpLen = 0 return [] ok
     
     # Arabic base letters are in range 0x0621-0x064A (42 entries)
-    if $_arabicShapingLookup = NULL
-        $_arabicShapingLookup = list(42)
+    if $arabicShapingLookup = NULL
+        $arabicShapingLookup = list(42)
         tableLen = len(aArabicShapingTable)
         for si = 1 to tableLen
             idx = aArabicShapingTable[si][1] - 0x0621 + 1
             if idx >= 1 and idx <= 42
-                $_arabicShapingLookup[idx] = aArabicShapingTable[si]
+                $arabicShapingLookup[idx] = aArabicShapingTable[si]
             ok
         next
     ok
-    shapingLookup = $_arabicShapingLookup
+    shapingLookup = $arabicShapingLookup
     
     result = []
     
@@ -779,12 +782,12 @@ func ttfGetGlyphID cmapF4, codepoint
     if codepoint > 0xFFFF return 0 ok
     
     # Check cache first
-    if $_glyphCacheReady
+    if $glyphCacheReady
         if codepoint <= 0x06FF
-            cached = $_glyphCache1[codepoint + 1]
+            cached = $glyphCache1[codepoint + 1]
             if cached >= 0 return cached ok
         elseif codepoint >= 0xFE70 and codepoint <= 0xFEFF
-            cached = $_glyphCache2[codepoint - 0xFE70 + 1]
+            cached = $glyphCache2[codepoint - 0xFE70 + 1]
             if cached >= 0 return cached ok
         ok
     ok
@@ -818,11 +821,11 @@ func ttfGetGlyphID cmapF4, codepoint
                 ok
             ok
             # Store in cache
-            if $_glyphCacheReady
+            if $glyphCacheReady
                 if codepoint <= 0x06FF
-                    $_glyphCache1[codepoint + 1] = gid
+                    $glyphCache1[codepoint + 1] = gid
                 elseif codepoint >= 0xFE70 and codepoint <= 0xFEFF
-                    $_glyphCache2[codepoint - 0xFE70 + 1] = gid
+                    $glyphCache2[codepoint - 0xFE70 + 1] = gid
                 ok
             ok
             return gid
@@ -832,15 +835,15 @@ func ttfGetGlyphID cmapF4, codepoint
 
 # Initialize glyph ID cache (call after loading font)
 func initGlyphIDCache
-    $_glyphCache1 = list(1792)   # 0x0000-0x06FF
-    for _gc = 1 to 1792
-        $_glyphCache1[_gc] = -1
+    $glyphCache1 = list(1792)   # 0x0000-0x06FF
+    for nIndex = 1 to 1792
+        $glyphCache1[nIndex] = -1
     next
-    $_glyphCache2 = list(144)    # 0xFE70-0xFEFF
-    for _gc = 1 to 144
-        $_glyphCache2[_gc] = -1
+    $glyphCache2 = list(144)    # 0xFE70-0xFEFF
+    for nIndex = 1 to 144
+        $glyphCache2[nIndex] = -1
     next
-    $_glyphCacheReady = true
+    $glyphCacheReady = true
 
 # Get glyph width in font units
 func ttfGetGlyphWidth fontInfo, glyphID
@@ -864,7 +867,7 @@ func binToHex data
     # Pre-allocate result string of exact size (2 hex chars per byte)
     result = copy("00", dataLen)
     for i = 1 to dataLen
-        hex2 = $_byteToHex[ascii(data[i]) + 1]
+        hex2 = $byteToHex[ascii(data[i]) + 1]
         pos = (i - 1) * 2 + 1
         result[pos] = hex2[1]
         result[pos + 1] = hex2[2]
@@ -917,8 +920,8 @@ func buildToUnicodeCMap cidToUnicode
 
 # Format a 16-bit value as 4-char hex
 func hexU16 val
-    h1 = $_hexChars[((val >> 12) & 0x0F) + 1]
-    h2 = $_hexChars[((val >> 8) & 0x0F) + 1]
-    h3 = $_hexChars[((val >> 4) & 0x0F) + 1]
-    h4 = $_hexChars[(val & 0x0F) + 1]
+    h1 = $hexChars[((val >> 12) & 0x0F) + 1]
+    h2 = $hexChars[((val >> 8) & 0x0F) + 1]
+    h3 = $hexChars[((val >> 4) & 0x0F) + 1]
+    h4 = $hexChars[(val & 0x0F) + 1]
     return "" + h1 + h2 + h3 + h4
