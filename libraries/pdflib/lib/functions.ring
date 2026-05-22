@@ -113,9 +113,6 @@ func pdfNum value
     ok
     # Format with 2 decimal places
     rounded = floor(value * 100 + 0.5) / 100
-    if rounded = floor(rounded)
-        return "" + rounded
-    ok
     return "" + rounded
 
 func pdfRGBNorm rgb
